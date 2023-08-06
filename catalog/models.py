@@ -1,10 +1,11 @@
 from django.db import models
+from django_resized import ResizedImageField
 
 
 class Product(models.Model):
     title = models.CharField(max_length=50, verbose_name='Название')
     desc = models.TextField(blank=True, null=True, verbose_name='Описание')
-    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name='Изображение')
+    image = ResizedImageField(upload_to='products/', blank=True, null=True, verbose_name='Изображение')
     category = models.ForeignKey('catalog.Category', on_delete=models.SET_NULL, null=True, verbose_name='Категория')
     price = models.IntegerField(verbose_name='Цена')
     creation_date = models.DateTimeField(auto_now_add=True)
