@@ -15,3 +15,14 @@ def contacts(request):
         message = request.POST.get('message')
         print(f'{name} ({phone}): {message}')
     return render(request, 'catalog/contacts.html')
+
+
+def products(request, pk):
+#    pk = Product.pk
+    products_detail = {'object_list': Product.objects.get(pk=pk)}
+    return render(request, 'catalog/products.html', products_detail)
+#class ProductsDetailView(DetailView):
+#    model = Product
+#    template_name = 'catalog/products.html'
+#    context_object_name = 'item'
+#    pk_url_kwarg = 'pk'

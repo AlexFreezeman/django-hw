@@ -29,10 +29,9 @@
                             <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                                 <li>Категория: {{ object.category }}</li>
                                 <li>Описание: {{ object.desc|slice:':100' }}</li>
-                                <img src="{% mediapath object.image %}" />
-
+                                <img src="{% mediapath object.image %}"/>
                             </ul>
-                            <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
+                            <a href="{% url 'catalog:products' object.pk %}" class="btn btn-outline-primary">Подробнее</a>
                         </div>
                     </div>
                 </div>
