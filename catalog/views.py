@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.views.generic import DetailView
+
+from catalog import models
 from catalog.models import Product
 
 
@@ -16,13 +19,18 @@ def contacts(request):
         print(f'{name} ({phone}): {message}')
     return render(request, 'catalog/contacts.html')
 
-
-def products(request, pk):
-#    pk = Product.pk
-    products_detail = {'object_list': Product.objects.get(pk=pk)}
-    return render(request, 'catalog/products.html', products_detail)
 #class ProductsDetailView(DetailView):
-#    model = Product
-#    template_name = 'catalog/products.html'
-#    context_object_name = 'item'
-#    pk_url_kwarg = 'pk'
+#    def product(request, pk):
+#        Model = models.Product
+#        template_name = 'catalog/products.html'
+#        context = super().get_context_data(pk=pk)
+#        context['object_list'] = Product.objects.all()
+#    pk = Product.pk
+#        product_detail = Product.objects.get(pk=pk)
+#        product_detail[pk] = pk.objects.first()
+#        return context
+#    return render(request, 'catalog/products.html', products_detail)
+class ProductsDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/products.html'
+    context_object_name = 'product'

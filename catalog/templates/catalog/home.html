@@ -31,7 +31,7 @@
                                 <li>Описание: {{ object.desc|slice:':100' }}</li>
                                 <img src="{% mediapath object.image %}"/>
                             </ul>
-                            <a href="{% url 'catalog:products' object.pk %}" class="btn btn-outline-primary">Подробнее</a>
+                            <a href="{% url 'catalog:product' object.pk %}" class="btn btn-outline-primary">Подробнее</a>
                         </div>
                     </div>
                 </div>
