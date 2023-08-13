@@ -1,5 +1,6 @@
 from django.db import models
 from django_resized import ResizedImageField
+from slugify import slugify
 
 
 class Product(models.Model):
@@ -29,3 +30,24 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+
+
+class Blog(models.Model):
+    title = models.CharField(max_length=50, verbose_name='Название')
+    slug = models.SlugField(max_length=50, verbose_name='Slug')
+    content = models.TextField(verbose_name='Содержимое')
+    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name='Изображение')
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_published = models.BooleanField(default=False)
+    views_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.title} {self.created_at}'
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'

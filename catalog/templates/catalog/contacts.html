@@ -5,6 +5,7 @@
         <nav class="ms-5">
             <a class="p-2 btn btn-outline-primary" href="/">Каталог</a>
             <a class="p-2 btn btn-outline-primary" href="/contacts/">Контакты</a>
+            <a class="p-2 btn btn-outline-primary" href="/blog/">Блог</a>
         </nav>
     </div>
 
@@ -55,10 +56,11 @@
                             <div class="mb-3">
                                 <label for="message">Сообщение</label>
                                 <textarea type="text" name="message" class="form-control" id="message"
-                                          placeholder="Контактный телефон" required></textarea>
+                                          placeholder="Сообщение" required></textarea>
                             </div>
                         </form>
                         <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Отправить</button>
+                        <a href="{% url 'catalog:home' %}" class="btn btn-lg btn-block btn-outline-primary">Назад</a>
                     </div>
                 </div>
             </div>
