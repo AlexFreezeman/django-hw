@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
@@ -81,13 +82,12 @@ class ProductCreateView(CreateView):
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
-
     success_url = reverse_lazy('catalog:home')
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        ParentFormset = inlineformset_factory(Product, Version, VersionForm, extra=1)
+        ParentFormset = inlineformset_factory(self.model, Version, form=VersionForm, extra=1)
 
         if self.request.method == 'POST':
             formset = ParentFormset(self.request.POST, instance=self.object)
@@ -100,11 +100,12 @@ class ProductUpdateView(UpdateView):
     def form_valid(self, form):
         context_data = self.get_context_data()
         formset = context_data['formset']
-        self.object = form.save()
+        with transaction.atomic():
+            self.object = form.save()
+            if formset.is_valid():
+                formset.instance = self.object
+                formset.save()
 
-        if formset.is_valid():
-            formset.instance = self.object
-            formset.save()
         return super().form_valid(form)
 
     def get_success_url(self, **kwargs):
