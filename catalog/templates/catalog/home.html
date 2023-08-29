@@ -8,7 +8,7 @@
         <p class="lead">Skystore - это отличный магазин технических безделушек!</p>
     </div>
 
-{% if user.is_authenticated %}
+{% if request.user.is_superuser %}
     <nav class="col-2 offset-5">
         <a class="btn btn-lg btn-block btn-outline-primary mb-4" href="{% url 'catalog:create_product' %}">Новый продукт</a>
     </nav>
@@ -26,7 +26,7 @@
                             <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
                             <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                                 <li>Категория: {{ object.category }}</li>
-                                <li>Описание: {{ object.desc|slice:':100' }}</li>
+                                <li>Описание: {{ object.description|slice:':100' }}</li>
                                 <img src="{% mediapath object.image %}"/>
                             </ul>
                             <a href="{% url 'catalog:product' object.pk %}" class="btn btn-lg btn-block btn-outline-primary">Подробнее</a>

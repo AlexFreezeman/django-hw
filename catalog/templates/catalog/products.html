@@ -19,18 +19,20 @@
                             <span class="text">Цена: {{ object.price }} $ </span>
 
                         </div>
-                        <p class="lead"> Описание товара: {{ object.desc }} </p>
+                        <p class="lead"> Описание товара: {{ object.description }} </p>
                         <p class="lead">Дата создания карточки: {{ object.creation_date }}</p>
                         <p class="lead">Дата обновления карточки: {{ object.modification_date }}</p>
 
                         </ul>
                             <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
                             <a href="{% url 'catalog:home' %}" class="btn btn-lg btn-block btn-outline-primary">Назад</a>
-                        {% if user.is_authenticated %}
+                        {% if object.owner == request.user or request.user.is_superuser %}
                             <a href="{% url 'catalog:update_product' object.pk %}" type="button" class="btn btn-lg btn-block btn-outline-primary">Редактировать</a>
                             <a href="{% url 'catalog:delete_product' object.pk%}" type="button" class="btn btn-lg btn-block btn-outline-primary">Удалить</a>
-                            <a href="{% url 'catalog:version' object.pk%}" type="button" class="btn btn-lg btn-block btn-outline-primary">К версиям продукта</a>
+                        {% elif perms.catalog.сan_change_desc %}
+                            <a href="{% url 'catalog:update_moderator' object.pk %}" type="button" class="btn btn-lg btn-block btn-outline-primary">Редактировать</a>
                         {% endif %}
+                        <a href="{% url 'catalog:version' object.pk%}" type="button" class="btn btn-lg btn-block btn-outline-primary">К версиям продукта</a>
                         </div>
 
 

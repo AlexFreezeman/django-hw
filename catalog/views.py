@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 from django.forms import inlineformset_factory
 from django.shortcuts import render
@@ -5,7 +6,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from catalog.models import Product, Blog, Version
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ProductFormModerator
 
 
 class ProductListView(ListView):
@@ -30,7 +31,6 @@ class ProductsDetailView(DetailView):
 
 
 class BlogList(ListView):
-    """Класс-контроллер для страницы со списком постов блога"""
     model = Blog
     extra_context = {'title': 'Блог'}
 
@@ -72,7 +72,7 @@ class BlogDeletePost(DeleteView):
     success_url = '/blog/'
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
 
@@ -85,10 +85,11 @@ class ProductCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
-    success_url = reverse_lazy('catalog:home')
+
+    permission_required = 'catalog.сan_change_desc'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -118,9 +119,21 @@ class ProductUpdateView(UpdateView):
         return reverse('catalog:version', args=[self.kwargs.get('pk')])
 
 
-class ProductDeleteView(DeleteView):
+class ProductUpdateViewModerator(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+
+    model = Product
+    form_class = ProductFormModerator
+
+    permission_required = 'catalog.сan_change_desc'
+
+    def get_success_url(self, **kwargs):
+        return reverse('catalog:version', args=[self.kwargs.get('pk')])
+
+
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:home')
+    permission_required = 'catalog.Can delete Продукт'
 
 
 class VersionListView(ListView):

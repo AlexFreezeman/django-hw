@@ -18,7 +18,7 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>Описание: {{ object.desc }}</li>
+                        <li>Описание: {{ object.description }}</li>
                     </ul>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                     <h4 class="my-0 font-weight-normal">У продукта отсутствуют активные версии</h4>
                 </div>
     {% endif %}
-    {% if user.is_authenticated %}
+    {% if user == current_user %}
     <a href="{% url 'catalog:update_product' pk %}" type="button" class="btn btn-lg btn-block btn-outline-primary">Редактировать продукт</a>
     {% endif %}
     </div>

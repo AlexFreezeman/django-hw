@@ -10,7 +10,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
 
-        fields = ('title', 'image', 'desc', 'category', 'price')
+        fields = ('title', 'image', 'description', 'category', 'price', 'is_published')
 
     def clean_title(self):
         cleaned_data = self.cleaned_data['title']
@@ -26,12 +26,33 @@ class ProductForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
 
     def clean_description(self):
-        cleaned_data = self.cleaned_data['desc']
+        cleaned_data = self.cleaned_data['description']
         for word in FORBIDDEN_WORDS:
             if word in cleaned_data.lower():
                 raise forms.ValidationError(f'Нельзя добавлять продукты у которых в описании есть слово {word}')
 
         return cleaned_data
+
+
+class ProductFormModerator(forms.ModelForm):
+
+    class Meta:
+        model = Product
+        fields = ('description', 'category', 'is_published')
+
+    def clean_description(self):
+
+        cleaned_data = self.cleaned_data['description']
+        for word in FORBIDDEN_WORDS:
+            if word in cleaned_data.lower():
+                raise forms.ValidationError(f'Нельзя добавлять продукты у которых в описании есть слово {word}')
+
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
 
 
 class VersionForm(forms.ModelForm):

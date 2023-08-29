@@ -7,13 +7,14 @@ from config import settings
 
 class Product(models.Model):
     title = models.CharField(max_length=50, verbose_name='Название')
-    desc = models.TextField(blank=True, null=True, verbose_name='Описание')
+    description = models.TextField(blank=True, null=True, verbose_name='Описание')
     image = ResizedImageField(upload_to='products/', blank=True, null=True, verbose_name='Изображение')
     category = models.ForeignKey('catalog.Category', on_delete=models.SET_NULL, null=True, verbose_name='Категория')
     price = models.IntegerField(verbose_name='Цена')
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    is_published = models.BooleanField(default=False, verbose_name='Статус публикации')
 
     def __str__(self):
         return f'{self.title} {self.price}'
@@ -21,6 +22,10 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
+        permissions = [('сan_change_description', 'can change description'),
+                       ('сan_change_category', 'can change category'),
+                       ('сan_change_is_published', 'can change is_published'),
+                       ('сan_view_price', 'can view price')]
 
 
 class Category(models.Model):
