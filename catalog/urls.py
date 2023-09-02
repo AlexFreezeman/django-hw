@@ -4,14 +4,14 @@ from django.views.decorators.cache import cache_page
 from catalog.apps import CatalogConfig
 from catalog.views import contacts, ProductsDetailView, ProductListView, BlogList, BlogDetailView, BlogCreatePost, \
     BlogUpdatePost, BlogDeletePost, ProductCreateView, ProductUpdateView, ProductDeleteView, VersionListView, \
-    ProductUpdateViewModerator
+    ProductUpdateViewModerator, categories_list
 
 app_name = CatalogConfig.name
 
 urlpatterns = [
-    path('', ProductListView.as_view(), name='home'),
+    path('', cache_page(60)(ProductListView.as_view()), name='home'),
     path('contacts/', contacts, name='contacts'),
-    path('product/<int:pk>/', ProductsDetailView.as_view(), name='product'),
+    path('product/<int:pk>/', cache_page(60)(ProductsDetailView.as_view()), name='product'),
     path('blog/', BlogList.as_view(), name='blog'),
     path('blog/<slug:slug>/', BlogDetailView.as_view(), name='blog_post'),
     path('create_post/', BlogCreatePost.as_view(), name='create_post'),
@@ -23,4 +23,5 @@ urlpatterns = [
     path('update/<int:pk>/moderator', ProductUpdateViewModerator.as_view(), name='update_moderator'),
     path('delete/<int:pk>/', ProductDeleteView.as_view(), name='delete_product'),
     path('versions/<int:pk>', VersionListView.as_view(), name='version'),
+    path('categories/', categories_list, name='categories')
 ]

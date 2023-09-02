@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.db import transaction
 from django.forms import inlineformset_factory
 from django.shortcuts import render
@@ -7,6 +9,7 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView, D
 
 from catalog.models import Product, Blog, Version
 from catalog.forms import ProductForm, VersionForm, ProductFormModerator
+from catalog.services import get_cashed_categories_list, get_cashed_products_list
 
 
 class ProductListView(ListView):
@@ -24,10 +27,21 @@ def contacts(request):
     return render(request, 'catalog/contacts.html')
 
 
+def categories_list(request):
+    categories = get_cashed_categories_list()
+    context = {'object_list': categories, }
+    return render(request, 'catalog/categories.html', context)
+
+
 class ProductsDetailView(DetailView):
     model = Product
     template_name = 'catalog/products.html'
     context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['product'] = get_cashed_products_list(self.object.pk)
+        return context_data
 
 
 class BlogList(ListView):
@@ -120,7 +134,6 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 
 
 class ProductUpdateViewModerator(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-
     model = Product
     form_class = ProductFormModerator
 
